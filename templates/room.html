@@ -1,0 +1,98 @@
+{% extends 'base.html'%}
+
+{% block content%}
+
+<!-- logout button -->
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <a class="btn btn-primary" href="{%url 'home'%}">Join another Room <i class="fa fa-sign-out"></i></a>
+        </div>
+    </div>
+<!-- a form to enter the message and display it in real time -->
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Chat</h3>
+            </div>
+            <!-- Room name and username -->
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>Room: {{ room }}</h4>
+                        <h4>Room id: {{ room.id }}</h4>
+                    </div>
+                    <div class="col-md-6">
+                        <h4>Username: {{ username }}</h4>
+                    </div>
+                </div>
+                <hr>
+                <!-- Display the messages -->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="messages">
+                            {% for text in texts %}
+                            <!-- display username, text and time -->
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="well">
+                                        <h5 class="">{{ text.username|title }}</h5>
+                                        <p>{{ text.text }}</p>
+                                        <p>{{ text.timestamp }}</p>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <!-- Form to send the message -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form id="post-form" action="">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <input type="hidden" name="room_name" id="room_name" value="{{room}}" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <input type="hidden" name="username" id="username" value="{{username}}" class="form-control"
+                                        placeholder="">
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" name="text" id="text" class="form-control"
+                                        placeholder="{{room}}">
+                                </div>
+
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary">Send</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    //ajax to send messages
+    $(document).on('submit', '#post-form',function(e){
+        e.preventDefault();
+        $.ajax({
+            url: '/send/',
+            type: 'POST',
+            data: {
+                room_name: $('#room_name').val(),
+                username: $('#username').val(),
+                text: $('#text').val(),
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+            },
+             success: function (data) {
+                console.log('You have sent a message');
+            }
+        });
+        $('#text').val('');
+    });
+</script>
+
+{% endblock content%}
