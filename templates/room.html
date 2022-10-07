@@ -2,81 +2,87 @@
 
 {% block content%}
 
-<!-- logout button -->
+<!-- memebers list in a navbar form -->
 <div class="row">
-    <div class="col-md-6 col-md-offset-3">
-        <a class="btn btn-primary" href="{%url 'home'%}">Join another Room <i class="fa fa-sign-out"></i></a>
-        </div>
-    </div>
-<!-- a form to enter the message and display it in real time -->
-<div class="row">
-    <div class="col-md-6 col-md-offset-3">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">Chat</h3>
+    <div class="col-md-12">
+        <div class="navbar navbar-default navbar-fixed-top">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a href="#" class="navbar-brand ">{{room|title}} Room</a>
             </div>
-            <!-- Room name and username -->
-            <div class="panel-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <h4>Room: {{ room }}</h4>
-                        <h4>Room id: {{ room.id }}</h4>
-                    </div>
-                    <div class="col-md-6">
-                        <h4>Username: {{ username }}</h4>
-                    </div>
-                </div>
-                <hr>
-                <!-- Display the messages -->
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="messages">
-                            {% for text in texts %}
-                            <!-- display username, text and time -->
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="well">
-                                        <h5 class="">{{ text.username|title }}</h5>
-                                        <p>{{ text.text }}</p>
-                                        <p>{{ text.timestamp }}</p>
-                                    </div>
-                                </div>
-                                {% endfor %}
-                            </div>
-                        </div>
-                    </div>
-                    <hr>
-                    <!-- Form to send the message -->
-                    <div class="row">
-                        <div class="col-md-12">
-                            <form id="post-form" action="">
-                                {% csrf_token %}
-                                <div class="form-group">
-                                    <input type="hidden" name="room_name" id="room_name" value="{{room}}" class="form-control">
-                                </div>
-                                <div class="form-group">
-                                    <input type="hidden" name="username" id="username" value="{{username}}" class="form-control"
-                                        placeholder="">
-                                </div>
-                                <div class="form-group">
-                                    <input type="text" name="text" id="text" class="form-control"
-                                        placeholder="{{room}}">
-                                </div>
-
-                                <div class="form-group">
-                                    <button type="submit" class="btn btn-primary">Send</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    {% for text in texts %}
+                    <li><a href="#">{{ text.username }}</a></li>
+                    {% endfor %}
+                </ul>
+                <ul class="nav navbar-nav navbar-right ">
+                    <li><a href="#">Logged in as {{ username|title }}</a></li>
+                    <li><a href="{%url 'home'%}">Leave Room <i class="fa fa-sign-out"></i></a></li>
+                </ul>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Display the messages -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="messages">
+            {% for text in texts %}
+            {% if text.username == username %}
+            <div class="message message-out">
+                <div class="user">
+                    <p>You</p>
+                </div>
+                <div class="message-body">
+                    <div class="message-text">
+                        <p>{{ text.text }}</p>
+                    </div>
+                    <div class="message-timestamp">
+                        <p>{{ text.timestamp }}</p>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="message message-in">
+                <div class="user">
+                    <p>{{ text.username|title }}</p>
+                </div>
+                <div class="message-body">
+                    <div class="message-text">
+                        <p>{{ text.text }}</p>
+                    </div>
+                    <div class="message-timestamp">
+                        <p>{{ text.timestamp }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+        <form id="post-form" action="">
+            {% csrf_token %}
+            <div class="form-group input-group input-group-lg" id="input">
+                <input type="text" name="text" id="text" class="form-control"
+                    placeholder="Type your message here...">
+                <span class="input-group-btn">
+                    <button class="btn btn-primary" type="submit">
+                        <i class="fa fa-send"></i>
+                    </button>
+                </span>
+            </div>
+        </form>
+    </div>
+</div>
+
 <script type="text/javascript">
     //ajax to send messages
-    $(document).on('submit', '#post-form',function(e){
+    $(document).on('submit', '#post-form', function (e) {
         e.preventDefault();
         $.ajax({
             url: '/send/',
@@ -87,12 +93,13 @@
                 text: $('#text').val(),
                 csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
             },
-             success: function (data) {
+            success: function (data) {
                 console.log('You have sent a message');
             }
         });
         $('#text').val('');
     });
 </script>
+
 
 {% endblock content%}

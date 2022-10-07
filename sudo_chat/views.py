@@ -13,11 +13,15 @@ def home(request):
             return redirect('/'+room_name+'/?username='+username)
         else:
             room = Room.objects.create(room_name=room_name)
-            user = User.objects.create(username=username)
-            user.save()
-            room.save()
-            messages.success(request,'Room created successfully')
-            return redirect('/'+room_name+'/?username='+username)
+            if User.objects.filter(username=username).exists():
+                messages.info(request,'Username already exists')
+                return redirect('/'+room_name+'/?username='+username)
+            else:
+                user = User.objects.create(username=username)
+                user.save()
+                room.save()
+                messages.success(request,'Room created successfully')
+                return redirect('/'+room_name+'/?username='+username)
     else:
         return render(request,'home.html')
 
