@@ -4,7 +4,16 @@
 
 <!-- a form to enter the room and the username -->
     <div class="row">
-        <div class="col-md-6 col-md-offset-3 ">
+        <!-- how to join or create a room in an alert format -->
+        <div class="col-md-12">
+            <div class="alert alert-info">
+                <p>Enter a room name and a username to join or create a room</p>
+            </div>
+        
+        <div class="col-md-12">
+
+        </div>
+        <div class="col-md-6">
             <div class="glass">
                 <!-- join room heading -->
                 <h1 class="text-center">Join Room</h1>
@@ -13,15 +22,35 @@
                     {% csrf_token %}
                     <div class="form-group">
                         <label for="room">Room</label>
-                        <input type="text" name="room_name" id="room" class="form-control" placeholder="Room">
+                        <input type="text" name="room_name" id="room" class="form-control" placeholder="Room" required>
                     </div>
                     <div class="form-group">
                         <label for="username">Username</label>
-                        <input type="text" name="username" id="username" class="form-control" placeholder="Username">
+                        <input type="text" name="username" id="username" class="form-control" placeholder="Username" required>
                     </div>
                     <div class="form-group text-center">
                         <button type="submit" class="btn btn-primary">Join Room</button>
                 </form>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <div class="glass">
+                <h2 class="text-center">Rooms</h2>
+                <ul class="list-group">
+                    {% for room in rooms %}
+                    <li class="list-group-item">
+                        {{ room.room_name }}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="alert alert-info">
+                <h2>Chat App</h2>
+                <p>Chat App is a simple chat application built with Django and Django Channels. It allows users to create rooms and chat with other users in real time.</p>
+                <p>It is built with Django Channels 2.0 and Django 2.0. It uses Redis as the channel layer.</p>
+                <p>It is a work in progress and will be updated as I learn more about Django Channels.</p>
             </div>
         </div>
     </div>

@@ -3,36 +3,37 @@
 {% block content%}
 
 <!-- memebers list in a navbar form -->
-<div class="row">
-    <div class="col-md-12">
-        <div class="navbar navbar-default navbar-fixed-top">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a href="#" class="navbar-brand ">{{room|title}} Room</a>
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    {% for text in texts %}
-                    <li><a href="#">{{ text.username }}</a></li>
-                    {% endfor %}
-                </ul>
-                <ul class="nav navbar-nav navbar-right ">
-                    <li><a href="#">Logged in as {{ username|title }}</a></li>
-                    <li><a href="{%url 'home'%}">Leave Room <i class="fa fa-sign-out"></i></a></li>
-                </ul>
-            </div>
-        </div>
+<div class="navbar navbar-default navbar-fixed-top">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <a href="#" class="navbar-brand ">{{room|title}} Room</a>
+        <br>
+        <!-- list users in the room in a whatsapp like format -->
+        <ul class="nav navbar-nav navbar-right users-list">
+            <li class="users">
+                {{users|join:", "|truncatechars:40}}
+            </li>
+    </div>
+    <div class="navbar-collapse collapse">
+        <ul class="nav navbar-nav navbar-right ">
+            <li><a href="#">Logged in as {{ username|title }}</a></li>
+            <li><a href="{%url 'home'%}">Leave Room <i class="fa fa-sign-out"></i></a></li>
+        </ul>
     </div>
 </div>
 
 <!-- Display the messages -->
 <div class="row">
     <div class="col-md-12">
-        <div class="messages">
+        <!-- created on badge -->
+
+        <div class="messages" id ="display" >
+            <div class="badge badge-pill badge-primary">Created on {{ room.created_on|date }}</div>
+            {% if texts %}
             {% for text in texts %}
             {% if text.username == username %}
             <div class="message message-out">
@@ -64,12 +65,31 @@
             </div>
             {% endif %}
             {% endfor %}
+            {% else %}
+            <div class="message message-in">
+                <div class="user">
+                    <p>ChatBot</p>
+                </div>
+                <div class="message-body">
+                    <div class="message-text">
+                        <p>There are no messages in this room</p>
+                    </div>
+                    <div class="message-timestamp">
+                        <p>Now</p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
         </div>
-        <form id="post-form" action="">
+    </div>
+    <div class="col-md-12">
+        <form id="post-form">
             {% csrf_token %}
             <div class="form-group input-group input-group-lg" id="input">
-                <input type="text" name="text" id="text" class="form-control"
-                    placeholder="Type your message here...">
+                <input type="hidden" name="username" id="username" value="{{username}}" class="form-control">
+                <input type="hidden" name="room_name" id="room_name" value="{{room}}" class="form-control">
+                <input type="text" name="text" id="text" class="form-control" placeholder="Type your message here..."
+                    required=>
                 <span class="input-group-btn">
                     <button class="btn btn-primary" type="submit">
                         <i class="fa fa-send"></i>
@@ -81,23 +101,29 @@
 </div>
 
 <script type="text/javascript">
-    //ajax to send messages
-    $(document).on('submit', '#post-form', function (e) {
-        e.preventDefault();
+    $(document).on('submit', '#post-form', function (event) {
+        event.preventDefault();
+        var username = $('#username').val();
+        var room_name = $('#room_name').val();
+        var text = $('#text').val();
+        const url = "{% url 'send' room %}";
+        console.log(username, room_name, text);
         $.ajax({
-            url: '/send/',
-            type: 'POST',
+            url: url,
+            type: "POST",
+            accept: "application/json",
+            action: "post",
             data: {
-                room_name: $('#room_name').val(),
-                username: $('#username').val(),
-                text: $('#text').val(),
-                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                username: username,
+                room_name: room_name,
+                text: text,
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
             },
             success: function (data) {
-                console.log('You have sent a message');
+                $('#text').val('').focus();
+                console.log(data);
             }
         });
-        $('#text').val('');
     });
 </script>
 
