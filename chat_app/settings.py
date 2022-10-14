@@ -16,7 +16,7 @@ load_dotenv()
 
 import os
 import django_heroku
-django_heroku.settings(locals())
+# django_heroku.settings(locals())
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,10 +26,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-64td%fiwg9dg0dof^j7d%#exq$!b^o*2@r(008!^w-$9fi8eu^'
+# SECRET_KEY = 'django-insecure-64td%fiwg9dg0dof^j7d%#exq$!b^o*2@r(008!^w-$9fi8eu^'
 
+# Generated_SECRET_KEY = 'vke%=stjvxrr$(ai8d&uzqskaz!q$5gc2ir3#&1p6(!1hi_hk*'
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
