@@ -26,12 +26,12 @@
     </div>
 </div>
 
-<!-- Display the messages -->
+<!-- Display the texts -->
 <div class="row">
     <div class="col-md-12">
         <!-- created on badge -->
 
-        <div class="messages" id ="display" >
+        <div class="messages" id="display">
             <div class="badge badge-pill badge-primary">Created on {{ room.created_on|date }}</div>
             {% if texts %}
             {% for text in texts %}
@@ -98,9 +98,30 @@
             </div>
         </form>
     </div>
+    <!-- icon to scroll over the messages to the bottom -->
+    <div class="col-md-12">
+        <div class="scroll-down" id = "scroll-down">
+            <i class="fa fa-arrow-down"></i>
+        </div>
+    </div>
+
 </div>
 
 <script type="text/javascript">
+    // Scroll to the bottom of the page
+    var objDiv = document.getElementById("display");
+    objDiv.scrollTop = objDiv.scrollHeight;
+
+
+    // Scroll to the bottom of the page in animated way when the user clicks on the scroll down icon
+    $('#scroll-down').click(function () {
+        var objDiv = document.getElementById("display");
+        $(objDiv).animate({
+            scrollTop: objDiv.scrollHeight
+        }, 2000);
+    });
+
+    // Send the message to the server
     $(document).on('submit', '#post-form', function (event) {
         event.preventDefault();
         var username = $('#username').val();
@@ -122,10 +143,50 @@
             success: function (data) {
                 $('#text').val('').focus();
                 console.log(data);
-            }
+            },
         });
+        // get the messages
+        function getMessages() {
+            setInterval(function () {
+                $.ajax({
+                    type: 'GET',
+                    url: "{% url 'get_messages' room %}",
+                    success: function (response) {
+                        console.log(response);
+                        $("#display").empty();
+                        for (var key in response.texts) {
+                            // var temp="<div class='messages darker'><b>"+response.texts[key].username+"</b><p>"+response.texts[key].value+"</p><span class='time-left'>"+response.texts[key].time_stamp+"</span></div>";
+                            if (response.texts[key].username == username) {
+                                var temp =
+                                    "<div class='message message-out'><div class='user'><p>You</p></div><div class='message-body'><div class='message-text'><p>" +
+                                    response.texts[key].text +
+                                    "</p></div><div class='message-timestamp'><p>" +
+                                    response.texts[key].timestamp +
+                                    "</p></div></div></div>";
+                            } else {
+                                var temp =
+                                    "<div class='message message-in'><div class='user'><p>" +
+                                    response.texts[key].username +
+                                    "</p></div><div class='message-body'><div class='message-text'><p>" +
+                                    response.texts[key].text +
+                                    "</p></div><div class='message-timestamp'><p>" +
+                                    response.texts[key].timestamp +
+                                    "</p></div></div></div>";
+                            }
+                            $("#display").append(temp);
+                        }
+                    },
+                    error: function (response) {
+                        console.log('An error occured')
+                    }
+                });
+            }, 1000);
+        }
+        getMessages();
+        // automatically scroll to the last message sent
+        var objDiv = document.getElementById("display");
+        objDiv.scrollTop = objDiv.scrollHeight;
     });
+
 </script>
-
-
 {% endblock content%}

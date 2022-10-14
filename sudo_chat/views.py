@@ -66,3 +66,11 @@ def get_messages(request,room_name):
     else:
         return HttpResponse('Request method is not a GET')
 
+def get_count(request,room_name):
+    if request.method == 'GET':
+        room = Room.objects.get(room_name=room_name)
+        texts = Message.objects.filter(room_name=room)
+        return JsonResponse({'count':texts.count()})
+    else:
+        return HttpResponse('Request method is not a GET')
+
