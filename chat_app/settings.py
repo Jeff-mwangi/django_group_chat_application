@@ -30,9 +30,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Generated_SECRET_KEY = 'vke%=stjvxrr$(ai8d&uzqskaz!q$5gc2ir3#&1p6(!1hi_hk*'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-CSRF_COOKIE_SECURE = False
-
-CSRF_TRUSTED_ORIGINS = ['localhost:3000', 'localhost:8000']
 
 ALLOWED_HOSTS = ['*']
 
