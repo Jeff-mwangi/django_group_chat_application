@@ -31,6 +31,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+CSRF_TRUSTED_ORIGINS = ['https://damp-atoll-41864.herokuapp.com']
+
 ALLOWED_HOSTS = ['*']
 
 
