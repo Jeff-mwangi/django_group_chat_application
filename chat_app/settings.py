@@ -31,7 +31,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 CSRF_COOKIE_SECURE = False
-CORS_ORIGIN_WHITELIST = [ 'http://localhost:3000', 'http://localhost:8000']
+
 CSRF_TRUSTED_ORIGINS = ['localhost:3000', 'localhost:8000']
 
 ALLOWED_HOSTS = ['*']
