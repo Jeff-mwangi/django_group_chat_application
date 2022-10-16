@@ -27,8 +27,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 # SECRET_KEY = 'django-insecure-64td%fiwg9dg0dof^j7d%#exq$!b^o*2@r(008!^w-$9fi8eu^'
 
-# Generated_SECRET_KEY = 'vke%=stjvxrr$(ai8d&uzqskaz!q$5gc2ir3#&1p6(!1hi_hk*'
-# SECURITY WARNING: don't run with debug turned on in production!
+SECRET_KEY = os.environ.get('SECRET_KEY')
+
 DEBUG = True
 
 CSRF_TRUSTED_ORIGINS = ['https://damp-atoll-41864.herokuapp.com']
